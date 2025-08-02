@@ -7,6 +7,11 @@ export interface Restaurant {
   address: string;
   rating: number;
   distance: number;
+  latitude: number;
+  longitude: number;
+  url?: string; // Kakao URL (선택사항)
+  phone?: string; // 전화번호 (선택사항)
+  roadAddress?: string; // 도로명주소 (선택사항)
 }
 
 export interface RestaurantDetail extends Restaurant {

@@ -33,4 +33,8 @@ export interface MapRestaurant {
   address: string;
   rating?: number;
   priceRange?: string;
+  url?: string; // Kakao URL (선택사항)
+  phone?: string; // 전화번호 (선택사항)
+  roadAddress?: string; // 도로명주소 (선택사항)
+  distance?: number; // 거리 (선택사항)
 } 

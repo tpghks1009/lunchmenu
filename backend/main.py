@@ -5,7 +5,7 @@ from .routers import lunch
 
 # 로깅 설정
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.WARNING,  # INFO에서 WARNING으로 변경
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.StreamHandler(),

@@ -344,6 +344,50 @@ class ApiService {
       throw error;
     }
   }
+
+  /**
+   * Kakao Nearby API를 통한 주변 식당 조회
+   * @param lat 위도
+   * @param lng 경도
+   * @param radius 검색 반경 (미터, 기본값: 1000)
+   * @returns 주변 식당 목록
+   */
+  async getKakaoNearbyRestaurants(lat: number, lng: number, radius: number = 1000): Promise<Restaurant[]> {
+    try {
+      if (USE_SAMPLE_DATA) {
+        // 샘플 데이터 사용
+        await new Promise(resolve => setTimeout(resolve, 500)); // 로딩 시뮬레이션
+        return sampleRestaurants;
+      }
+
+      // 실제 API 호출 (KakaoRestaurant 타입으로 받음)
+      const response = await apiClient.get<any[]>('/api/restaurants/kakao-nearby', {
+        params: { lat, lng, radius }
+      });
+      
+      // KakaoRestaurant를 Restaurant 타입으로 변환 (URL 포함)
+      const restaurants: Restaurant[] = response.data.map((item: any, index: number) => ({
+        id: index + 1, // 임시 ID 생성
+        name: item.name,
+        description: item.category || '음식점',
+        category: item.category || '기타',
+        image: '/images/restaurant-default.jpg', // 기본 이미지
+        address: item.address || item.road_address || '주소 정보 없음',
+        rating: 4.0, // 기본 평점
+        distance: item.distance || 0,
+        latitude: item.lat,
+        longitude: item.lng,
+        url: item.url, // Kakao URL 추가
+        phone: item.phone, // 전화번호 추가
+        roadAddress: item.road_address // 도로명주소 추가
+      }));
+      
+      return restaurants;
+    } catch (error) {
+      console.error('getKakaoNearbyRestaurants error:', error);
+      throw error;
+    }
+  }
 }
 
 // API 서비스 인스턴스 생성 및 내보내기
