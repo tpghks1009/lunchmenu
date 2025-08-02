@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RestaurantCard from '../components/RestaurantCard';
 import { apiService } from '../services/api';
@@ -47,14 +47,7 @@ const Home: React.FC = () => {
     }
   }, []);
 
-  // 주변 식당 정보 가져오기
-  useEffect(() => {
-    if (location) {
-      loadNearbyRestaurants();
-    }
-  }, [location]);
-
-  const loadNearbyRestaurants = async () => {
+  const loadNearbyRestaurants = useCallback(async () => {
     const currentLocation = location || {
       latitude: 37.5665,
       longitude: 126.9780,
@@ -69,7 +62,14 @@ const Home: React.FC = () => {
     } catch (error) {
       console.error('주변 식당 정보를 가져오는데 실패했습니다:', error);
     }
-  };
+  }, [location]);
+
+  // 주변 식당 정보 가져오기
+  useEffect(() => {
+    if (location) {
+      loadNearbyRestaurants();
+    }
+  }, [location, loadNearbyRestaurants]);
 
   const handleAIRecommendation = async () => {
     // 위치 정보가 없으면 기본 위치 사용

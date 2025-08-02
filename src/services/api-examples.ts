@@ -118,18 +118,26 @@ export const exampleUpdatePreference = async () => {
 export const exampleRandomRecommendationFlow = async () => {
   try {
     // 1. 랜덤 식당 추천
-    const randomRestaurant = await apiService.getRandomRestaurant(37.5665, 126.9780);
-    console.log('추천된 식당:', randomRestaurant.name);
+    const randomRecommendation = await apiService.getRandomRestaurant(37.5665, 126.9780);
+    console.log('추천 결과:', randomRecommendation);
 
-    // 2. 상세 정보 조회
-    const detail = await apiService.getRestaurantDetail(randomRestaurant.id);
-    console.log('상세 정보:', detail);
+    // 추천된 식당 ID로 상세 정보 조회
+    if (randomRecommendation.recommendations.length > 0) {
+      const recommendedId = randomRecommendation.recommendations[0].id;
+      
+      // 2. 상세 정보 조회
+      const detail = await apiService.getRestaurantDetail(recommendedId);
+      console.log('상세 정보:', detail);
 
-    // 3. 히스토리에 저장
-    await apiService.postHistory(randomRestaurant.id);
-    console.log('히스토리 저장 완료');
+      // 3. 히스토리에 저장
+      await apiService.postHistory(recommendedId);
+      console.log('히스토리 저장 완료');
 
-    return { restaurant: randomRestaurant, detail };
+      return { recommendation: randomRecommendation, detail };
+    } else {
+      console.log('추천된 식당이 없습니다.');
+      return null;
+    }
   } catch (error) {
     console.error('랜덤 추천 플로우 실패:', error);
   }
